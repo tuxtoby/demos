@@ -1,8 +1,14 @@
 import 'package:demos/firstDecision/first_decision_content.dart';
 import 'package:demos/survey/survey.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+bool shouldUseFirestoreEmulator = false;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
@@ -41,14 +47,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -64,9 +62,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             title: const Text('Dêmos'),
           ),
-          body: const TabBarView(
+          body: TabBarView(
             children: [
-              FirstDecisionContent(),
+              const FirstDecisionContent(),
               Survey(),
             ],
           ),
