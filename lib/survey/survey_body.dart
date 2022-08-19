@@ -3,23 +3,26 @@ import 'package:flutter/material.dart';
 import 'decision.dart';
 
 class SurveyBody extends StatelessWidget {
-  const SurveyBody({Key? key}) : super(key: key);
+  final String _question;
+  final List<String> _decisions;
+  final VoidCallback _nextCallback;
+
+  const SurveyBody(this._question, this._decisions, this._nextCallback);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          children: const [
+          children: [
             Text(
-              "Faut-il isoler les logements en France?",
+              _question,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
             ),
-            Decision("Oui, et l'état paye l'intégralité"),
-            Decision("Oui, et l'état paye une partie"),
-            Decision("Non, je ne trouve pas ça utile"),
-            Decision("Sans opinion"),
+            Column(children: _decisions.map((_) => Decision(_)).toList()),
+            ElevatedButton(
+                onPressed: () => _nextCallback(), child: const Text("Next"))
           ],
         ));
   }
