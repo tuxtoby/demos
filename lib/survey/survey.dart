@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:demos/survey/decision.dart';
-import 'package:demos/survey/survey_body.dart';
 import 'package:demos/survey/survey_data.dart';
 import 'package:flutter/material.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import 'additionnal_info.dart';
+import 'widgets/survey_content.dart';
+import 'widgets/survey_error.dart';
+import 'widgets/survey_loading.dart';
 
 class Survey extends StatefulWidget {
   const Survey({Key? key}) : super(key: key);
@@ -21,10 +20,6 @@ class _SurveyState extends State<Survey> {
       FirebaseFirestore.instance.collection("surveys");
 
   final List<SurveyData> _surveys = <SurveyData>[];
-
-  String get currentQuestion => _surveys[_index].question;
-  List<String> get currentDecisions => _surveys[_index].decisions;
-  String get currentAdditionnalInfo => _surveys[_index].addionnalInfo;
 
   void _nextQuestion() {
     setState(() {
@@ -49,62 +44,18 @@ class _SurveyState extends State<Survey> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _datas.get(), // a previously-obtained Future<String> or null
+        future: _datas.get(),
         builder: (context, snapshot) {
-          List<Widget> children;
+          Widget content;
           if (snapshot.hasData) {
             snapshotToWidgets(snapshot);
-            children = <Widget>[
-              SlidingUpPanel(
-                  minHeight: 75,
-                  backdropEnabled: true,
-                  body: SurveyBody(
-                      currentQuestion, currentDecisions, _nextQuestion),
-                  panel: AdditionnalInfo(currentAdditionnalInfo),
-                  collapsed: Container(
-                      color: Colors.blueGrey,
-                      child: Center(
-                          child: Column(
-                        children: const [
-                          SizedBox(height: 10),
-                          Icon(Icons.arrow_upward, color: Colors.white),
-                          SizedBox(height: 10),
-                          Text("Pour comprendre",
-                              style: TextStyle(color: Colors.white)),
-                        ],
-                      ))))
-            ];
+            content = SurveyContent(_surveys[_index], _nextQuestion);
           } else if (snapshot.hasError) {
-            children = <Widget>[
-              const Icon(
-                Icons.error_outline,
-                color: Colors.red,
-                size: 60,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Text('Error: ${snapshot.error}'),
-              )
-            ];
+            content = SurveyError(snapshot.error as String);
           } else {
-            children = const <Widget>[
-              SizedBox(
-                width: 60,
-                height: 60,
-                child: CircularProgressIndicator(),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Text('Awaiting result...'),
-              )
-            ];
+            content = const SurveyLoading();
           }
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: children,
-            ),
-          );
+          return Center(child: content);
         });
   }
 }
