@@ -1,5 +1,6 @@
 import 'package:demos/firstDecision/first_decision_content.dart';
 import 'package:demos/survey/survey.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -7,7 +8,17 @@ bool shouldUseFirestoreEmulator = false;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
+  if (!kIsWeb) {
+    await Firebase.initializeApp();
+  } else {
+    await Firebase.initializeApp(
+        options: FirebaseOptions(
+            apiKey: "AIzaSyDl1bjZFN9zO8cQZks4bwI1ylTfxCkHg9E",
+            appId: "1:323110275143:web:b78678e93f845ece210962",
+            messagingSenderId: "323110275143",
+            projectId: "demos-7cfae"));
+  }
 
   runApp(const MyApp());
 }
