@@ -7,7 +7,7 @@ import 'survey_body.dart';
 
 class SurveyContent extends StatelessWidget {
   final SurveyData survey;
-  final VoidCallback _nextQuestion;
+  final Function _nextQuestion;
 
   const SurveyContent(this.survey, this._nextQuestion);
 

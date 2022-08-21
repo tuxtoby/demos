@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 
 import 'decision.dart';
 
 class SurveyBody extends StatelessWidget {
   final String _question;
   final List<String> _decisions;
-  final VoidCallback _nextCallback;
+  final Function _nextCallback;
 
   const SurveyBody(this._question, this._decisions, this._nextCallback);
 
@@ -20,9 +21,11 @@ class SurveyBody extends StatelessWidget {
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 24),
             ),
-            Column(children: _decisions.map((_) => Decision(_)).toList()),
-            ElevatedButton(
-                onPressed: () => _nextCallback(), child: const Text("Next"))
+            Column(
+                children: _decisions
+                    .mapIndexed((index, element) =>
+                        Decision(element, _nextCallback, index))
+                    .toList())
           ],
         ));
   }

@@ -21,7 +21,7 @@ class _SurveyState extends State<Survey> {
 
   final List<SurveyData> _surveys = <SurveyData>[];
 
-  void _nextQuestion() {
+  void _nextQuestion(int question) {
     setState(() {
       _index++;
     });
